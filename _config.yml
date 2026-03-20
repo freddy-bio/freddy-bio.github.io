@@ -1,10 +1,11 @@
-title: fred
-description: Notes on biology, software, and building things.
+title: fred's notebook
+description: A small notebook on biology, software, and the systems around them.
 url: "https://freddy-bio.github.io"
 baseurl: ""
 lang: en
 timezone: Europe/London
 theme: minima
+github_username: freddy-bio
 plugins:
   - jekyll-feed
 header_pages:

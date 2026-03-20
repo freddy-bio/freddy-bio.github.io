@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Starting Here"
-date: 2026-03-20 09:00:00 +0000
+date: 2026-03-20 00:01:00 +0000
 categories: notes
 ---
 

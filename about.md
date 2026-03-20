@@ -6,6 +6,8 @@ permalink: /about/
 
 I'm Fred.
 
-This site is a small notebook for essays, project notes, and short posts on biology, software, and the systems around them.
+I work across biology, software, and the messy interfaces between tools and real-world research.
 
-I wanted something simple, fast, and readable, so this site sticks to the minimal GitHub Pages/Jekyll setup.
+This site is a place for essays, build notes, and short posts that are worth keeping.
+
+I wanted it to stay simple, fast, and readable, so it uses a minimal GitHub Pages/Jekyll setup.
