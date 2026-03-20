@@ -1,0 +1,67 @@
+#!/bin/zsh
+
+set -e
+set -u
+set -o pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: ./new-post "Post Title" [category]
+
+Creates a new Jekyll post in _posts with the correct filename and front matter.
+The default category is "notes".
+EOF
+}
+
+if [[ $# -eq 0 ]]; then
+  usage
+  exit 1
+fi
+
+case "${1:-}" in
+  -h|--help)
+    usage
+    exit 0
+    ;;
+esac
+
+title="$1"
+category="${2:-notes}"
+root_dir="$(cd "$(dirname "$0")" && pwd)"
+posts_dir="$root_dir/_posts"
+
+if [[ ! -d "$posts_dir" ]]; then
+  echo "Missing posts directory: $posts_dir" >&2
+  exit 1
+fi
+
+slug="$(ruby -e 'title = ARGV[0].to_s.strip.downcase; slug = title.gsub(/[^a-z0-9]+/, "-").gsub(/\A-+|-+\z/, ""); exit 1 if slug.empty?; puts slug' -- "$title")"
+escaped_title="$(ruby -e 'value = ARGV[0].to_s.gsub("\\\\", "\\\\\\\\").gsub("\"", "\\\\\""); puts value' -- "$title")"
+escaped_category="$(ruby -e 'value = ARGV[0].to_s.gsub("\\\\", "\\\\\\\\").gsub("\"", "\\\\\""); puts value' -- "$category")"
+
+filename="$(date +"%Y-%m-%d")-$slug.md"
+filepath="$posts_dir/$filename"
+timestamp="$(date +"%Y-%m-%d %H:%M:%S %z")"
+
+if [[ -e "$filepath" ]]; then
+  echo "Post already exists: $filepath" >&2
+  exit 1
+fi
+
+cat > "$filepath" <<EOF
+---
+layout: post
+title: "$escaped_title"
+date: $timestamp
+categories: ["$escaped_category"]
+---
+
+Write here.
+EOF
+
+echo "Created $filepath"
+echo "Next:"
+echo "  1. Edit the file"
+echo "  2. git add _posts/$filename"
+echo "  3. git commit -m \"Add post: $title\""
+echo "  4. git push origin main"
