@@ -1,0 +1,11 @@
+title: fred
+description: Notes on biology, software, and building things.
+url: "https://freddy-bio.github.io"
+baseurl: "/fred.github.io"
+lang: en
+timezone: Europe/London
+theme: minima
+plugins:
+  - jekyll-feed
+header_pages:
+  - about.md
