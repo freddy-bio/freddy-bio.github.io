@@ -10,6 +10,7 @@ Usage: ./new-post "Post Title" [category]
 
 Creates a new Jekyll post in _posts with the correct filename and front matter.
 The default category is "notes".
+After creating the file, the script opens it in your editor.
 EOF
 }
 
@@ -34,6 +35,27 @@ if [[ ! -d "$posts_dir" ]]; then
   echo "Missing posts directory: $posts_dir" >&2
   exit 1
 fi
+
+open_in_editor() {
+  local path="$1"
+  local editor_cmd=()
+
+  if [[ -n "${VISUAL:-}" ]]; then
+    editor_cmd=("${(z)VISUAL}")
+  elif [[ -n "${EDITOR:-}" ]]; then
+    editor_cmd=("${(z)EDITOR}")
+  elif command -v code >/dev/null 2>&1; then
+    editor_cmd=("code" "-w")
+  elif command -v nano >/dev/null 2>&1; then
+    editor_cmd=("nano")
+  elif [[ "$OSTYPE" == darwin* ]]; then
+    editor_cmd=("open" "-t")
+  else
+    editor_cmd=("vi")
+  fi
+
+  "${editor_cmd[@]}" "$path"
+}
 
 slug="$(ruby -e 'title = ARGV[0].to_s.strip.downcase; slug = title.gsub(/[^a-z0-9]+/, "-").gsub(/\A-+|-+\z/, ""); exit 1 if slug.empty?; puts slug' -- "$title")"
 escaped_title="$(ruby -e 'value = ARGV[0].to_s.gsub("\\\\", "\\\\\\\\").gsub("\"", "\\\\\""); puts value' -- "$title")"
@@ -60,6 +82,8 @@ Write here.
 EOF
 
 echo "Created $filepath"
+echo "Opening in editor..."
+open_in_editor "$filepath"
 echo "Next:"
 echo "  1. Edit the file"
 echo "  2. git add _posts/$filename"
